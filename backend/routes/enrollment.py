@@ -1,5 +1,5 @@
 """Enrollment + dashboard routes — match the frontend's applyCouponAndEnroll() and openDashboard()."""
-from flask import Blueprint, request, jsonify, g
+from flask import Blueprint, request, jsonify, g, Response
 
 from services import enrollment_service
 from utils.auth import require_auth
@@ -39,3 +39,17 @@ def complete_milestone(enrollment_id, milestone_id):
         return jsonify(data)
     except PermissionError as e:
         return err(str(e), 403)
+
+
+@enrollment_bp.get("/api/offer-letter")
+@require_auth
+def offer_letter():
+    """Offer letter PDF for the signed-in intern (enrolled + paid/free only)."""
+    from services.offer_letter_service import get_intern_offer_letter
+    try:
+        pdf, filename = get_intern_offer_letter(g.user_id)
+    except PermissionError as e:
+        return err(str(e), 403)
+    except ValueError as e:
+        return err(str(e), 404)
+    return Response(pdf, mimetype="application/pdf", headers={"Content-Disposition": f'attachment; filename="{filename}"', "Cache-Control": "no-store"})

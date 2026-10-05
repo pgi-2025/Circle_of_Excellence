@@ -7,7 +7,7 @@ already calls: /api/ambassador/apply, /login, /profile, /referrals,
 endpoints (attendance, reward claim, campaign participate) that the
 frontend's demo-mode `alert()` stubs describe as their real targets.
 """
-from flask import Blueprint, request, jsonify, g, current_app
+from flask import Blueprint, request, jsonify, g, current_app, Response
 
 from services import ambassador_service
 from utils.auth import require_ambassador_auth
@@ -219,3 +219,15 @@ def marketing_kit_download(asset_id):
         return jsonify(data)
     except ValueError as e:
         return err(str(e), 404)
+
+
+@ambassadors_bp.get("/offer-letter")
+@require_ambassador_auth
+def offer_letter():
+    """Offer letter PDF for the signed-in campus ambassador."""
+    from services.offer_letter_service import get_ambassador_offer_letter
+    try:
+        pdf, filename = get_ambassador_offer_letter(g.ambassador_id)
+    except ValueError as e:
+        return err(str(e), 404)
+    return Response(pdf, mimetype="application/pdf", headers={"Content-Disposition": f'attachment; filename="{filename}"', "Cache-Control": "no-store"})

@@ -898,9 +898,132 @@ header.nav.scrolled{box-shadow:0 8px 30px rgba(13,43,18,.08);background:rgba(255
   .psy-rep{padding:24px 14px 60px;}
   .psy-actions .btn{flex:1 1 45%;justify-content:center;}
 }
+
+/* ============ SECTOR SELECTION (Internship / Campus Ambassador) ============ */
+.nav-grp-int,.nav-grp-amb{display:contents;}
+body.sector-amb .nav-grp-int,body.sector-int .nav-grp-amb{display:none !important;}
+body.sector-none header.nav,body.sector-none footer,body.sector-none .sector-pane{display:none;}
+body.sector-int #sectorAmbassador,body.sector-amb #sectorInternship{display:none;}
+#sectorGate{display:none;position:fixed;inset:0;z-index:500;background:var(--indigo-900);opacity:1;transition:opacity .4s ease;}
+body.sector-none #sectorGate{display:flex;}
+#sectorGate.leaving{opacity:0;pointer-events:none;}
+.sg-brand{position:absolute;top:22px;left:50%;transform:translateX(-50%);z-index:3;display:flex;align-items:center;gap:10px;color:#fff;font-family:var(--font-display);font-weight:700;font-size:18px;white-space:nowrap;pointer-events:none;transition:opacity .3s;}
+.sg-brand .brand-logo{background:#fff;border-radius:8px;height:40px;}
+#sectorGate.picked .sg-brand{opacity:0;}
+.sg-panel{flex:1 1 0;min-width:0;min-height:0;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:32px 24px;color:#fff;text-align:center;overflow:hidden;transition:flex-grow .75s cubic-bezier(.77,0,.18,1),opacity .5s ease,padding .75s;font-family:var(--font-body);}
+.sg-int{background:linear-gradient(160deg,var(--indigo-900) 0%,#153A1C 55%,var(--indigo-800) 100%);}
+.sg-amb{background:linear-gradient(160deg,#6b4c04 0%,#8a6206 50%,var(--amber-500) 100%);}
+.sg-panel::before{content:'';position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.14),transparent 70%);top:-140px;right:-120px;pointer-events:none;transition:transform .6s;}
+.sg-panel:hover,.sg-panel:focus-visible{flex-grow:1.18;}
+.sg-panel:hover::before{transform:scale(1.25);}
+.sg-ic{width:96px;height:96px;border-radius:28px;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.28);display:flex;align-items:center;justify-content:center;transition:transform .35s ease,background .35s;}
+.sg-ic svg{width:46px;height:46px;stroke:#fff;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+.sg-panel:hover .sg-ic{transform:translateY(-4px) scale(1.06);background:rgba(255,255,255,.2);}
+.sg-panel h2{font-family:var(--font-display);color:#fff;font-size:clamp(28px,3.6vw,46px);font-weight:800;letter-spacing:-.02em;}
+.sg-panel p{color:rgba(255,255,255,.82);font-size:clamp(14px,1.3vw,17px);max-width:320px;}
+.sg-go{display:inline-flex;align-items:center;gap:8px;margin-top:6px;padding:12px 24px;border-radius:100px;background:#fff;color:var(--indigo-900);font-weight:600;font-size:14.5px;transition:transform .2s,gap .2s;}
+.sg-amb .sg-go{color:#6b4c04;}
+.sg-panel:hover .sg-go{transform:translateY(-2px);gap:12px;}
+.sg-panel > *{transition:opacity .3s;}
+#sectorGate.picked .sg-panel.take{flex-grow:40;cursor:default;}
+#sectorGate.picked .sg-panel.take > *{opacity:0;}
+#sectorGate.picked .sg-panel.away{flex-grow:.0001;padding-left:0;padding-right:0;opacity:0;pointer-events:none;}
+#sectorGate.picked .sg-panel{pointer-events:none;}
+#sectorGate.picked .sg-panel.away > *{opacity:0;white-space:nowrap;}
+@media (max-width:760px){
+  #sectorGate{flex-direction:column;}
+  .sg-brand{top:14px;font-size:15px;}
+  .sg-brand .brand-logo{height:32px;}
+  .sg-panel{padding:64px 20px 24px;gap:10px;}
+  .sg-panel + .sg-panel{padding-top:24px;}
+  .sg-ic{width:64px;height:64px;border-radius:20px;}
+  .sg-ic svg{width:32px;height:32px;}
+  .sg-go{padding:10px 20px;}
+  #sectorGate.picked .sg-panel.away{padding-top:0;padding-bottom:0;}
+}
+@media (max-height:520px) and (min-width:761px){.sg-ic{width:64px;height:64px;}.sg-panel{gap:10px;}}
 </style>
 </head>
-<body>
+<body class="sector-none">
+
+<!-- ================= SECTOR SELECTION ================= -->
+<div id="sectorGate" role="dialog" aria-label="Choose your section">
+  <div class="sg-brand"><img class="brand-logo" src="assets/logo.jpg" alt="Plant Green Inertia">Circle Of Excellence</div>
+  <button type="button" class="sg-panel sg-int" data-sector="internship">
+    <span class="sg-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 8l9-4 9 4-9 4-9-4z"/><path d="M7 10.5V15c0 1.4 2.2 3 5 3s5-1.6 5-3v-4.5"/><path d="M21 8v6"/></svg></span>
+    <h2>Internship</h2>
+    <p>Scholarship test, programs and certificates</p>
+    <span class="sg-go">Enter <span aria-hidden="true">→</span></span>
+  </button>
+  <button type="button" class="sg-panel sg-amb" data-sector="ambassador">
+    <span class="sg-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.5 6 .9-4.4 4.2 1 6L12 16.8 6.7 19.6l1-6L3.3 9.4l6-.9L12 3z"/></svg></span>
+    <h2>Campus Ambassador</h2>
+    <p>Earn rewards and lead on campus</p>
+    <span class="sg-go">Enter <span aria-hidden="true">→</span></span>
+  </button>
+</div>
+<script>
+/* Sector selection: purely presentational. Shows one of the two existing sections; no existing logic is touched. */
+(function(){
+  var B=document.body, KEY='coe_sector', CLS={internship:'sector-int',ambassador:'sector-amb'};
+  function store(v){try{v?sessionStorage.setItem(KEY,v):sessionStorage.removeItem(KEY);}catch(_){}}
+  function set(sec){
+    B.classList.remove('sector-none','sector-int','sector-amb');
+    B.classList.add(sec?CLS[sec]:'sector-none');
+    store(sec);
+  }
+  function initial(){
+    var h=(location.hash||'').slice(1), v=null, st=null;
+    try{v=sessionStorage.getItem('coe_view');st=sessionStorage.getItem(KEY);}catch(_){}
+    if(/(^|[?&])ref=/.test(location.search)||/\/admin-login\/?$/.test(location.pathname))return 'internship';
+    if(v==='amb')return 'ambassador';
+    if(v==='admin'||v==='dash'||v==='student')return 'internship';
+    if(h==='ambassador')return 'ambassador';
+    if(h&&document.getElementById(h)&&h!=='sectorGate')return st||'internship';
+    return CLS[st]?st:null;
+  }
+  /* h==='home' etc. cannot be checked yet (DOM not parsed) -> treat any known section hash as Internship */
+  function initial2(){
+    var h=(location.hash||'').slice(1);
+    if(/^(home|about|programs|faq|certSection)$/.test(h)){var s0=null;try{s0=sessionStorage.getItem(KEY);}catch(_){}return s0==='ambassador'?'ambassador':'internship';}
+    return initial();
+  }
+  set(initial2());
+  var gate=function(){return document.getElementById('sectorGate');};
+  function reset(){var g=gate();g.classList.remove('picked','leaving');g.querySelectorAll('.sg-panel').forEach(function(p){p.classList.remove('take','away');});}
+  function pick(sec){
+    var g=gate();
+    g.classList.add('picked');
+    g.querySelectorAll('.sg-panel').forEach(function(p){p.classList.add(p.dataset.sector===sec?'take':'away');});
+    setTimeout(function(){
+      set(sec);
+      window.scrollTo({top:0,behavior:'instant'});
+      g.classList.add('leaving');
+      setTimeout(reset,450);
+    },780);
+  }
+  function back(){
+    reset();
+    var g=gate();g.classList.add('leaving');
+    set(null);
+    window.scrollTo({top:0,behavior:'instant'});
+    requestAnimationFrame(function(){requestAnimationFrame(function(){g.classList.remove('leaving');});});
+  }
+  document.addEventListener('click',function(e){
+    var t=e.target.closest&&e.target.closest('.sg-panel[data-sector]');
+    if(t){e.preventDefault();pick(t.dataset.sector);return;}
+    if(e.target.closest&&(e.target.closest('#sectorBack')||e.target.closest('header.nav .logo'))){e.preventDefault();back();return;}
+    /* in-page / footer anchors that point into the other section: switch first, then let the browser scroll */
+    var a=e.target.closest&&e.target.closest('a[href^="#"]');
+    if(!a||a.getAttribute('href').length<2)return;
+    var el=document.getElementById(a.getAttribute('href').slice(1));
+    if(!el)return;
+    var pane=el.closest('.sector-pane');
+    if(pane){var sec=pane.id==='sectorAmbassador'?'ambassador':'internship';if(!B.classList.contains(CLS[sec]))set(sec);}
+  },true);
+  window.coeSector={show:set,back:back};
+})();
+</script>
 
 <!-- ================= NAVBAR ================= -->
 <header class="nav">
@@ -914,18 +1037,21 @@ header.nav.scrolled{box-shadow:0 8px 30px rgba(13,43,18,.08);background:rgba(255
     </ul> -->
     <div class="nav-right">
       <!-- <button class="icon-btn" aria-label="Search"><i class="lucide lucide-search"></i>🔍</button> -->
-      <a href="#" class="btn-sm btn-ghost" id="loginBtn" onclick="openAuth(event,'login')">Login</a>
+      <span class="nav-grp-int"><a href="#" class="btn-sm btn-ghost" id="loginBtn" onclick="openAuth(event,'login')">Login</a></span>
       <div class="nav-menu" id="navLinks">
-      <a href="#" onclick="openAuth(event,'signup')" class="btn-sm btn-primary nav-signup" id="signupBtn">Sign Up</a>
-      <a href="#" onclick="openDashboard(event)" class="btn-sm btn-ghost nav-signup" id="dashNavBtn" style="display:none">Dashboard</a>
-      <a href="#" onclick="openAmbassadorLogin(event)" class="btn-sm btn-ghost nav-signup" id="ambNavLoginBtn">Ambassador Login</a>
-      <a href="#" onclick="openAmbassadorDashboard(event)" class="btn-sm btn-ghost nav-signup" id="ambNavDashBtn" style="display:none">Ambassador Dashboard</a>
+      <a href="#" class="btn-sm btn-ghost nav-signup" id="sectorBack">← Switch Section</a>
+      <span class="nav-grp-int"><a href="#" onclick="openAuth(event,'signup')" class="btn-sm btn-primary nav-signup" id="signupBtn">Sign Up</a>
+      <a href="#" onclick="openDashboard(event)" class="btn-sm btn-ghost nav-signup" id="dashNavBtn" style="display:none">Dashboard</a></span>
+      <span class="nav-grp-amb"><a href="#" onclick="openAmbassadorLogin(event)" class="btn-sm btn-ghost nav-signup" id="ambNavLoginBtn">Ambassador Login</a>
+      <a href="#" onclick="openAmbassadorDashboard(event)" class="btn-sm btn-ghost nav-signup" id="ambNavDashBtn" style="display:none">Ambassador Dashboard</a></span>
       </div>
       <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
     </div>
   </div>
 </header>
 
+<!-- ================= INTERNSHIP SECTOR ================= -->
+<div class="sector-pane" id="sectorInternship">
 <!-- ================= HERO ================= -->
 <section class="hero" id="home">
   <div class="reel-viewport">
@@ -967,31 +1093,6 @@ header.nav.scrolled{box-shadow:0 8px 30px rgba(13,43,18,.08);background:rgba(255
   </div>
 </section>
 
-<!-- ================= CAMPUS AMBASSADOR ================= -->
-<section class="section amb-section" id="ambassador">
-  <div class="wrap">
-    <div class="amb-head-row">
-      <div class="head">
-        <div class="hand-note"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M4 12c4-6 9-8 16-6"/><path d="M15 4l5 2-2 5"/></svg>Become a Campus Ambassador</div>
-        <!-- <h2>Become a Campus Ambassador</h2> -->
-        <p>Represent our internship programs on your campus, help students discover opportunities, earn rewards and grow your professional network.</p>
-        <p style="margin-top:10px;font-weight:600;color:var(--indigo-600);">Complete the Campus Ambassador Assessment. Your performance report will be reviewed by our team.</p>
-      </div>
-      <div class="amb-head-ctas">
-        <a href="#" onclick="openAmbassadorAssessment(event)" class="btn btn-primary">Take Ambassador Assessment</a>
-        <a href="#" onclick="openAmbassadorLogin(event)" class="btn btn-ghost">Ambassador Login</a>
-      </div>
-    </div>
-    <div class="amb-grid">
-      <div class="amb-card"><span class="amb-num" aria-hidden="true">01</span><div class="amb-ic" aria-hidden="true">🎁</div><div class="amb-txt"><h4>Earn Rewards</h4><p>Collect XP for every student you bring in and redeem it for real rewards and merchandise.</p></div></div>
-      <div class="amb-card"><span class="amb-num" aria-hidden="true">02</span><div class="amb-ic" aria-hidden="true">🧭</div><div class="amb-txt"><h4>Build Leadership Skills</h4><p>Run campaigns and events on your campus and build organizing skills that go straight on your resume.</p></div></div>
-      <div class="amb-card"><span class="amb-num" aria-hidden="true">03</span><div class="amb-ic" aria-hidden="true">🤝</div><div class="amb-txt"><h4>Grow Your Network</h4><p>Connect with mentors, fellow ambassadors, and students across colleges nationwide.</p></div></div>
-      <div class="amb-card"><span class="amb-num" aria-hidden="true">04</span><div class="amb-ic" aria-hidden="true">⭐</div><div class="amb-txt"><h4>Get Recognition</h4><p>Climb the leaderboard and get featured for your impact as a top-performing ambassador.</p></div></div>
-      <div class="amb-card"><span class="amb-num" aria-hidden="true">05</span><div class="amb-ic" aria-hidden="true">🔑</div><div class="amb-txt"><h4>Exclusive Opportunities</h4><p>Get first access to internships, campaigns, and events reserved only for ambassadors.</p></div></div>
-      <div class="amb-card"><span class="amb-num" aria-hidden="true">06</span><div class="amb-ic" aria-hidden="true">📜</div><div class="amb-txt"><h4>Ambassador Certificate</h4><p>Earn a verifiable Campus Ambassador certificate recognizing your contribution.</p></div></div>
-    </div>
-  </div>
-</section>
 
 <!-- ================= SCHOLARSHIP TEST =================
 <section class="section sch-test" id="scholarship">
@@ -1231,6 +1332,47 @@ header.nav.scrolled{box-shadow:0 8px 30px rgba(13,43,18,.08);background:rgba(255
     </div>
   </div>
 </section> -->
+
+</div><!-- /sectorInternship -->
+
+<div class="sector-pane" id="sectorAmbassador">
+<!-- Photo reel (same styling/photos as the Internship hero; filled by the MARQUEE_ROWS script) -->
+<div class="reel-viewport amb-reel">
+  <div class="marquee-stack">
+    <div class="marquee-row"><div class="marquee-track dir-left" id="ambMarqueeRow1"></div></div>
+    <div class="marquee-row"><div class="marquee-track dir-right" id="ambMarqueeRow2"></div></div>
+    <div class="marquee-row"><div class="marquee-track dir-left" id="ambMarqueeRow3"></div></div>
+  </div>
+  <div class="reel-vignette"></div>
+  <div class="reel-sprockets top"></div>
+  <div class="reel-sprockets bottom"></div>
+</div>
+<!-- ================= CAMPUS AMBASSADOR ================= -->
+<section class="section amb-section" id="ambassador">
+  <div class="wrap">
+    <div class="amb-head-row">
+      <div class="head">
+        <div class="hand-note"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M4 12c4-6 9-8 16-6"/><path d="M15 4l5 2-2 5"/></svg>Become a Campus Ambassador</div>
+        <!-- <h2>Become a Campus Ambassador</h2> -->
+        <p>Represent our internship programs on your campus, help students discover opportunities, earn rewards and grow your professional network.</p>
+        <p style="margin-top:10px;font-weight:600;color:var(--indigo-600);">Complete the Campus Ambassador Assessment. Your performance report will be reviewed by our team.</p>
+      </div>
+      <div class="amb-head-ctas">
+        <a href="#" onclick="openAmbassadorAssessment(event)" class="btn btn-primary">Take Ambassador Assessment</a>
+        <a href="#" onclick="openAmbassadorLogin(event)" class="btn btn-ghost">Ambassador Login</a>
+      </div>
+    </div>
+    <div class="amb-grid">
+      <div class="amb-card"><span class="amb-num" aria-hidden="true">01</span><div class="amb-ic" aria-hidden="true">🎁</div><div class="amb-txt"><h4>Earn Rewards</h4><p>Collect XP for every student you bring in and redeem it for real rewards and merchandise.</p></div></div>
+      <div class="amb-card"><span class="amb-num" aria-hidden="true">02</span><div class="amb-ic" aria-hidden="true">🧭</div><div class="amb-txt"><h4>Build Leadership Skills</h4><p>Run campaigns and events on your campus and build organizing skills that go straight on your resume.</p></div></div>
+      <div class="amb-card"><span class="amb-num" aria-hidden="true">03</span><div class="amb-ic" aria-hidden="true">🤝</div><div class="amb-txt"><h4>Grow Your Network</h4><p>Connect with mentors, fellow ambassadors, and students across colleges nationwide.</p></div></div>
+      <div class="amb-card"><span class="amb-num" aria-hidden="true">04</span><div class="amb-ic" aria-hidden="true">⭐</div><div class="amb-txt"><h4>Get Recognition</h4><p>Climb the leaderboard and get featured for your impact as a top-performing ambassador.</p></div></div>
+      <div class="amb-card"><span class="amb-num" aria-hidden="true">05</span><div class="amb-ic" aria-hidden="true">🔑</div><div class="amb-txt"><h4>Exclusive Opportunities</h4><p>Get first access to internships, campaigns, and events reserved only for ambassadors.</p></div></div>
+      <div class="amb-card"><span class="amb-num" aria-hidden="true">06</span><div class="amb-ic" aria-hidden="true">📜</div><div class="amb-txt"><h4>Ambassador Certificate</h4><p>Earn a verifiable Campus Ambassador certificate recognizing your contribution.</p></div></div>
+    </div>
+  </div>
+</section>
+</div><!-- /sectorAmbassador -->
 
 <!-- ================= FOOTER ================= -->
 <footer>
@@ -1605,6 +1747,18 @@ header.nav.scrolled{box-shadow:0 8px 30px rgba(13,43,18,.08);background:rgba(255
           <div style="text-align:center;margin-top:20px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
             <button class="btn btn-ghost" onclick="viewAmbassadorCertificate()">View Certificate</button>
             <button class="btn btn-primary" onclick="downloadAmbassadorCertificate()">Download Certificate</button>
+            <button class="btn btn-ghost" onclick="downloadOfferLetter('amb', this)">Download Offer Letter</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Offer Letter -->
+      <div class="amb-page" id="ambPage-offerletter">
+        <div class="amb-panel">
+          <h4>Offer Letter</h4>
+          <p style="font-size:13.5px;margin:6px 0 16px;">Your official Campus Ambassador offer letter from Plant Green Inertia, ready to download as a PDF.</p>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <button class="btn btn-primary" onclick="downloadOfferLetter('amb', this)">Download Offer Letter</button>
           </div>
         </div>
       </div>
@@ -2158,6 +2312,9 @@ const MARQUEE_ROWS = [
   { id: 'marqueeRow1', tileCount: 12, offset: 0,  duration: 42 },
   { id: 'marqueeRow2', tileCount: 12, offset: 12, duration: 52 },
   { id: 'marqueeRow3', tileCount: 12, offset: 24, duration: 36 },
+  { id: 'ambMarqueeRow1', tileCount: 12, offset: 5,  duration: 46 },
+  { id: 'ambMarqueeRow2', tileCount: 12, offset: 17, duration: 56 },
+  { id: 'ambMarqueeRow3', tileCount: 12, offset: 11, duration: 38 },
 ];
 MARQUEE_ROWS.forEach(cfg => {
   const track = document.getElementById(cfg.id);
@@ -2706,7 +2863,7 @@ function dashNav(e, label){
 }
 
 /* ---- Dashboard sections: Offer Letter, Projects, Mentorship, Job Opportunities, Job Portal (read-only, uses /api/dashboard data) ---- */
-const JOB_PORTAL_URL = ''; // set to the Job Portal address; the link opens it for enrolled interns
+const JOB_PORTAL_URL = 'https://jobportal.plantgreeninertia.com'; // set to the Job Portal address; the link opens it for enrolled interns
 function dashSection(label){
   const d = window.__dash || {}, enr = d.enrollment, me = window.__dashMe || {}, ms = d.milestones || [], cert = d.certificate;
   const prog = (enr && enr.programs) || {}, done = ms.filter(m => m.status === 'complete').length;
@@ -2716,7 +2873,7 @@ function dashSection(label){
   let body;
   if (!enr) body = note('Enroll in an internship program first (take the Scholarship Test) to unlock this section.');
   else if (!ok) body = note('Complete your payment to unlock this section.');
-  else if (label === 'Offer Letter') body = note('Your official internship offer letter is ready.') + '<button class="btn btn-green btn-block" style="margin-top:12px;" onclick="printOfferLetter()">View / Print Offer Letter</button>';
+  else if (label === 'Offer Letter') body = note('Your official internship offer letter is ready.') + '<button class="btn btn-green btn-block" style="margin-top:12px;" onclick="downloadOfferLetter(\'intern\', this)">Download Offer Letter</button>';
   else if (label === 'Projects') body = ms.length ? admTable([['Project / milestone', r => `<b>${E(r.title)}</b><div style="font-size:12.5px;">${E(r.detail || '')}</div>`], ['Status', r => chip(r.status === 'complete' ? 'Completed' : 'Pending', r.status === 'complete' ? true : undefined)]], ms) + `<p style="margin-top:10px;">${done} of ${ms.length} completed (${pct}%). Your mentor marks projects complete after review.</p>` : note('No projects assigned yet.');
   else if (label === 'Mentorship') body = kv([['Program', E(prog.name)], ['Your mentor', E(prog.mentor_title || 'Assigned after onboarding')], ['Mode', E(prog.mode)], ['Skills covered', E(prog.skills)]]) + note('Your 1-to-1 mentorship starts with the onboarding call (see Internship progress). ' + (ms[1] && ms[1].status === 'complete' ? 'Onboarding call completed.' : 'Onboarding call is pending.'));
   else if (label === 'Job Opportunities') body = cert ? note('<b>You are eligible.</b> You have completed the internship and earned your certificate. Our team reaches out to top-performing interns with openings.') : note(`Top-performing interns may get an opportunity to continue with us. Finish all projects and earn your certificate to become eligible. Progress: <b>${pct}%</b>.`);
@@ -2728,6 +2885,7 @@ function dashSection(label){
 }
 
 function printOfferLetter(){
+  return downloadOfferLetter('intern'); // legacy HTML letter below is now unreachable; the PDF generator is used instead
   const d = window.__dash || {}, enr = d.enrollment, me = window.__dashMe || {}, prog = enr.programs || {};
   const dt = new Date(enr.enrolled_at || Date.now()).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
   const w = window.open('', '_blank'); if (!w) { alert('Please allow pop-ups to view the offer letter.'); return; }
@@ -2800,6 +2958,7 @@ async function openDashboard(e){
       <div class="dash-card"><div class="lbl">Certificate</div><div class="val">${cert ? cert.certificate_code : 'Not yet issued'}</div></div>
       <div class="dash-card"><div class="lbl">Payment Status</div><div class="val">${enrollment ? enrollment.payment_status : '—'}${enrollment && enrollment.payment_status === 'pending' ? ` <a href="#" class="btn btn-sm btn-green" style="margin-left:8px;" onclick="payPendingEnrollment('${enrollment.id}', event)">Pay Now</a>` : ''}</div></div>
       <div class="dash-card"><div class="lbl">Program Duration</div><div class="val">${enrollment ? enrollment.programs.duration_weeks + ' wks' : '—'}</div></div>
+      <div class="dash-card"><div class="lbl">Offer Letter</div><div class="val">${enrollment && (enrollment.payment_status === 'paid' || enrollment.payment_status === 'free') ? '<button class="btn btn-sm btn-primary" onclick="downloadOfferLetter(\'intern\', this)">Download</button>' : '—'}</div></div>
       <div class="dash-card" id="dashSchCard" style="grid-column:1/-1;"></div>
     `;
     renderScholarshipCard(coupon, dash.last_coupon_status);
@@ -3259,6 +3418,7 @@ const ambDashLinks = [
   { key:'rewards',     label:'Rewards' },
   { key:'leaderboard', label:'Leaderboard' },
   { key:'certificate', label:'Certificate' },
+  { key:'offerletter', label:'Offer Letter' },
   { key:'brochure',    label:'📄 Ambassador Brochure' },
 ];
 function renderAmbassadorSidebar(){
@@ -4359,6 +4519,20 @@ function closePsyResult() { closeOverlay('psyResultOverlay'); if (/^\/r\//.test(
 function psySaveBlob(blob, name) {
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+/* Offer letter PDF for the signed-in intern ('intern') or ambassador ('amb'). */
+async function downloadOfferLetter(kind, btn) {
+  const label = btn ? btn.textContent : '';
+  if (btn) { btn.disabled = true; btn.textContent = 'Preparing…'; }
+  try {
+    const headers = {};
+    if (kind === 'amb') { const s = getAmbassadorSession(); if (s && s.token) headers.Authorization = 'Bearer ' + s.token; }
+    else { const s = await getSession(); if (s) headers.Authorization = 'Bearer ' + s.access_token; }
+    const res = await fetch((window.API_BASE || window.location.origin) + (kind === 'amb' ? '/api/ambassador/offer-letter' : '/api/offer-letter'), { headers });
+    if (!res.ok) { const b = await res.json().catch(() => ({})); throw new Error(b.error || b.message || 'Could not generate the offer letter (' + res.status + ')'); }
+    psySaveBlob(await res.blob(), kind === 'amb' ? 'Campus_Ambassador_Offer_Letter.pdf' : 'Internship_Offer_Letter.pdf');
+  } catch (err) { alert(err.message); }
+  finally { if (btn) { btn.disabled = false; btn.textContent = label; } }
 }
 async function psyDownload() {
   try {
