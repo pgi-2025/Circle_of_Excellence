@@ -91,3 +91,21 @@ def list_active_coupons(user_id: str):
         else:
             supa.table("coupons").update({"status": "expired"}).eq("id", r["id"]).execute()
     return live
+
+
+def list_coupon_history(user_id: str):
+    """Every coupon ever issued to this user, newest first (dashboard history). Read-only."""
+    supa = get_supabase()
+    rows = (
+        supa.table("coupons")
+        .select("code, discount_percent, status, issued_at, expires_at, used_at")
+        .eq("user_id", user_id)
+        .order("issued_at", desc=True)
+        .execute()
+        .data
+        or []
+    )
+    for r in rows:
+        if r["status"] == "active" and _now() > parse_iso(r["expires_at"]):
+            r["status"] = "expired"  # display only; the existing flow flips it in the DB
+    return rows
