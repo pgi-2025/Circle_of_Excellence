@@ -2983,6 +2983,26 @@ function renderScholarshipCard(coupon, lastStatus){
   window.dashSchTimer = setTimeout(() => renderScholarshipCard(null, 'expired'), Math.max(0, Math.min(ms, 2147483647)));
 }
 
+/* ---------- DASHBOARD: coupon history (display only; each coupon is single-use, enforced server-side) ---------- */
+async function renderCouponHistory(){
+  const el = document.getElementById('dashCouponHistory');
+  if (!el) return;
+  try {
+    const res = await apiFetch('/api/coupons/history');
+    const rows = Array.isArray(res) ? res : ((res && res.data) || []);
+    const fmt = d => d ? new Date(d).toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'}) : '—';
+    const badge = { active:['Active','#2E7D32'], used:['Used','#6b7280'], expired:['Expired','#C62828'] };
+    el.innerHTML = '<div class="lbl">Coupon History</div>' + (rows.length ? rows.map(r => {
+      const b = badge[r.status] || [r.status, '#6b7280'];
+      return `<div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid var(--line);">
+        <div><b style="font-family:var(--font-display);letter-spacing:.04em;">${r.code}</b> · ${r.discount_percent >= 100 ? '100% Scholarship · FREE' : r.discount_percent + '% OFF'}
+        <div style="font-size:12.5px;opacity:.7;margin-top:2px;">Received ${fmt(r.issued_at)}${r.status === 'used' ? ' · Used ' + fmt(r.used_at) : ' · Valid until ' + fmt(r.expires_at)}</div></div>
+        <span style="font-size:12px;font-weight:700;color:${b[1]};border:1px solid ${b[1]};border-radius:999px;padding:3px 10px;">${b[0]}</span>
+      </div>`;
+    }).join('') : '<div style="font-size:14px;margin-top:8px;opacity:.7;">No coupons received yet. Take the Scholarship Test to earn one.</div>');
+  } catch (err) { el.style.display = 'none'; }
+}
+
 async function openDashboard(e){
   if(e) e.preventDefault();
   const session = await getSession();
@@ -3011,8 +3031,10 @@ async function openDashboard(e){
       <div class="dash-card"><div class="lbl">Program Duration</div><div class="val">${enrollment ? enrollment.programs.duration_weeks + ' wks' : '—'}</div></div>
       <div class="dash-card"><div class="lbl">Offer Letter</div><div class="val">${enrollment && (enrollment.payment_status === 'paid' || enrollment.payment_status === 'free') ? '<button class="btn btn-sm btn-primary" onclick="downloadOfferLetter(\'intern\', this)">Download</button>' : '—'}</div></div>
       <div class="dash-card" id="dashSchCard" style="grid-column:1/-1;"></div>
+      <div class="dash-card" id="dashCouponHistory" style="grid-column:1/-1;"></div>
     `;
     renderScholarshipCard(coupon, dash.last_coupon_status);
+    renderCouponHistory();
 
     const tickSvg = `<svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>`;
     const milestonesHtml = (dash.milestones && dash.milestones.length)
